@@ -19,4 +19,4 @@ jobs:
         uses: go-gremlins/gremlins-action@v1
         with:
           version: latest
-          args: unleash --diff "origin/main"
+          args: gremlins unleash --diff "origin/$GITHUB_BASE_REF"
