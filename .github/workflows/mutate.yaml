@@ -11,7 +11,7 @@ jobs:
   gremlins:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
@@ -37,4 +37,4 @@ jobs:
         uses: go-gremlins/gremlins-action@v1
         with:
           version: latest
-          args: unleash --diff "develop/master"
+          args: unleash --diff "origin/master"
