@@ -1,7 +1,9 @@
 name: Gremlins
 
 on:
-  push:
+    push:
+      branches: [ 'main' ]
+    pull_request:
     
 
 jobs:
@@ -17,4 +19,4 @@ jobs:
         uses: go-gremlins/gremlins-action@v1
         with:
           version: latest
-          workdir: controllers
+          args: unleash --diff "origin/$GITHUB_BASE_REF"
