@@ -57,14 +57,14 @@ func UpdateBook(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{"message": "Book not found"})
 }
 
-func DeleteBook(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	for i, book := range books {
-		if book.ID == id {
-			books = append(books[:i], books[i+1:]...)
-			c.JSON(http.StatusOK, gin.H{"message": "Book deleted"})
-			return
-		}
-	}
-	c.JSON(http.StatusNotFound, gin.H{"message": "Book not found"})
-}
+// func DeleteBook(c *gin.Context) {
+// 	id, _ := strconv.Atoi(c.Param("id"))
+// 	for i, book := range books {
+// 		if book.ID == id {
+// 			books = append(books[:i], books[i+1:]...)
+// 			c.JSON(http.StatusOK, gin.H{"message": "Book deleted"})
+// 			return
+// 		}
+// 	}
+// 	c.JSON(http.StatusNotFound, gin.H{"message": "Book not found"})
+// }
