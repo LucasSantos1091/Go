@@ -16,24 +16,10 @@ jobs:
         with:
           go-version-file: 'go.mod'
       - name: Get list of modified files
-        id: diff
-        run: |
-            git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
-            git diff --name-only origin/${{ github.event.pull_request.base.ref }} > modified_files.txt
-            echo "::set-output name=files::$(cat modified_files.txt)"
-      - name: Display modified files
-        run: |
-            echo "Modified files:"
-            cat modified_files.txt
-      - name: Perform action based on modified files
-        run: |
-            while IFS= read -r file; do
-              echo "Processing $file"
-              # Adicione ações específicas aqui com base no arquivo modificado
-            done < modified_files.txt
       
       - name: Run Gremlins
         uses: go-gremlins/gremlins-action@v1
         with:
           version: latest
-          args: unleash --diff "origin/master"
+          args: unleash --output=output.json
+          workdir: Go/controllers/
