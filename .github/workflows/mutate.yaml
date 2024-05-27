@@ -18,4 +18,4 @@ jobs:
         with:
           version: latest
           args: unleash --output=output.json
-          workdir: go/controllers
+          workdir: controllers
