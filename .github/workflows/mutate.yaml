@@ -42,13 +42,13 @@ jobs:
           echo "Mutator coverage: $MUTATOR_COVERAGE" >> test/dir/gremlins-summary.txt
           echo "$OUTPUT" > test/dir/gremlins-full-output.txt
       - name: Upload Gremlins summary
-        if: success()
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: gremlins-summary
           path: test/dir/gremlins-summary.txt
       - name: Upload Gremlins full output
-        if: success()
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: gremlins-full-output
