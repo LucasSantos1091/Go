@@ -19,34 +19,35 @@ jobs:
           version: latest
           args: --output=output.json
           workdir: controllers
+      -  id: gremlins_run
+         run: |
+          mkdir -p test/dir
+          go run gremlins --tags="tag1,tag2" > test/dir/gremlins-output.log
       - name: Capture Gremlins output
+        if: success()
         run: |
-            # Extraindo os valores desejados do output do Gremlins
-            KILLED=$(echo "$OUTPUT" | grep "Killed" | sed -E 's/.*Killed: ([0-9]+).*/\1/')
-            LIVED=$(echo "$OUTPUT" | grep "Lived" | sed -E 's/.*Lived: ([0-9]+).*/\1/')
-            NOT_COVERED=$(echo "$OUTPUT" | grep "Not covered" | sed -E 's/.*Not covered: ([0-9]+).*/\1/')
-            TEST_EFFICACY=$(echo "$OUTPUT" | grep "Test efficacy" | sed -E 's/.*Test efficacy: ([0-9.]+%).*/\1/')
-            MUTATOR_COVERAGE=$(echo "$OUTPUT" | grep "Mutator coverage" | sed -E 's/.*Mutator coverage: ([0-9.]+%).*/\1/')
-            echo "Killed: $KILLED"
-            echo "Lived: $LIVED"
-            echo "Not covered: $NOT_COVERED"
-            echo "Test efficacy: $TEST_EFFICACY"
-            echo "Mutator coverage: $MUTATOR_COVERAGE"
-            echo "Killed: $KILLED" > output/gremlins-summary.txt
-            echo "Lived: $LIVED" >> output/gremlins-summary.txt
-            echo "Not covered: $NOT_COVERED" >> output/gremlins-summary.txt
-            echo "Test efficacy: $TEST_EFFICACY" >> output/gremlins-summary.txt
-            echo "Mutator coverage: $MUTATOR_COVERAGE" >> output/gremlins-summary.txt
-        
-            # Salvando o conteúdo completo da saída do Gremlins
-            echo "$OUTPUT" > test/dir/gremlins-full-output.txt
+          # Extraindo os valores desejados do output do Gremlins
+          OUTPUT=$(cat test/dir/gremlins-output.log)
+          KILLED=$(echo "$OUTPUT" | grep "Killed" | awk '{print $2}')
+          LIVED=$(echo "$OUTPUT" | grep "Lived" | awk '{print $2}')
+          NOT_COVERED=$(echo "$OUTPUT" | grep "Not covered" | awk '{print $3}')
+          TEST_EFFICACY=$(echo "$OUTPUT" | grep "Test efficacy" | awk '{print $3}')
+          MUTATOR_COVERAGE=$(echo "$OUTPUT" | grep "Mutator coverage" | awk '{print $3}')
+          echo "Killed: $KILLED" > test/dir/gremlins-summary.txt
+          echo "Lived: $LIVED" >> test/dir/gremlins-summary.txt
+          echo "Not covered: $NOT_COVERED" >> test/dir/gremlins-summary.txt
+          echo "Test efficacy: $TEST_EFFICACY" >> test/dir/gremlins-summary.txt
+          echo "Mutator coverage: $MUTATOR_COVERAGE" >> test/dir/gremlins-summary.txt
+          echo "$OUTPUT" > test/dir/gremlins-full-output.txt
       - name: Upload Gremlins summary
+        if: success()
         uses: actions/upload-artifact@v2
         with:
-              name: gremlins-summary
-              path: output/gremlins-summary.txt
+          name: gremlins-summary
+          path: test/dir/gremlins-summary.txt
       - name: Upload Gremlins full output
+        if: success()
         uses: actions/upload-artifact@v2
         with:
-              name: gremlins-full-output
-              path: outputt/gremlins-full-output.txt
+          name: gremlins-full-output
+          path: test/dir/gremlins-full-output.txt
