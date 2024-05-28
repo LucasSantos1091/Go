@@ -19,3 +19,25 @@ jobs:
           version: latest
           args: unleash --output=output.json
           workdir: controllers
+      - name: Capture Gremlins output
+        run: |
+            # Extraindo os valores desejados do output do Gremlins
+            KILLED=$(echo "$OUTPUT" | grep "Killed" | sed -E 's/.*Killed: ([0-9]+).*/\1/')
+            LIVED=$(echo "$OUTPUT" | grep "Lived" | sed -E 's/.*Lived: ([0-9]+).*/\1/')
+            NOT_COVERED=$(echo "$OUTPUT" | grep "Not covered" | sed -E 's/.*Not covered: ([0-9]+).*/\1/')
+            TEST_EFFICACY=$(echo "$OUTPUT" | grep "Test efficacy" | sed -E 's/.*Test efficacy: ([0-9.]+%).*/\1/')
+            MUTATOR_COVERAGE=$(echo "$OUTPUT" | grep "Mutator coverage" | sed -E 's/.*Mutator coverage: ([0-9.]+%).*/\1/')
+            echo "Killed: $KILLED"
+            echo "Lived: $LIVED"
+            echo "Not covered: $NOT_COVERED"
+            echo "Test efficacy: $TEST_EFFICACY"
+            echo "Mutator coverage: $MUTATOR_COVERAGE"
+            echo "Killed: $KILLED" > test/dir/gremlins-summary.txt
+            echo "Lived: $LIVED" >> test/dir/gremlins-summary.txt
+            echo "Not covered: $NOT_COVERED" >> test/dir/gremlins-summary.txt
+            echo "Test efficacy: $TEST_EFFICACY" >> test/dir/gremlins-summary.txt
+            echo "Mutator coverage: $MUTATOR_COVERAGE" >> test/dir/gremlins-summary.txt
+        
+            # Salvando o conteúdo completo da saída do Gremlins
+            echo "$OUTPUT" > test/dir/gremlins-full-output.txt
+        
