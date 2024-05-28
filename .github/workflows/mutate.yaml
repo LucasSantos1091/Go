@@ -32,11 +32,11 @@ jobs:
             echo "Not covered: $NOT_COVERED"
             echo "Test efficacy: $TEST_EFFICACY"
             echo "Mutator coverage: $MUTATOR_COVERAGE"
-            echo "Killed: $KILLED" > /output/gremlins-summary.txt
-            echo "Lived: $LIVED" >> /output/gremlins-summary.txt
-            echo "Not covered: $NOT_COVERED" >> /output/gremlins-summary.txt
-            echo "Test efficacy: $TEST_EFFICACY" >> /output/gremlins-summary.txt
-            echo "Mutator coverage: $MUTATOR_COVERAGE" >> /output/gremlins-summary.txt
+            echo "Killed: $KILLED" > output/gremlins-summary.txt
+            echo "Lived: $LIVED" >> output/gremlins-summary.txt
+            echo "Not covered: $NOT_COVERED" >> output/gremlins-summary.txt
+            echo "Test efficacy: $TEST_EFFICACY" >> output/gremlins-summary.txt
+            echo "Mutator coverage: $MUTATOR_COVERAGE" >> output/gremlins-summary.txt
         
             # Salvando o conteúdo completo da saída do Gremlins
             echo "$OUTPUT" > test/dir/gremlins-full-output.txt
@@ -44,9 +44,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
               name: gremlins-summary
-              path: /output/gremlins-summary.txt
+              path: output/gremlins-summary.txt
       - name: Upload Gremlins full output
         uses: actions/upload-artifact@v2
         with:
               name: gremlins-full-output
-              path: /output/gremlins-full-output.txt
+              path: outputt/gremlins-full-output.txt
