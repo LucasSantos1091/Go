@@ -17,12 +17,7 @@ jobs:
         uses: go-gremlins/gremlins-action@v1
         with:
           version: latest
-          args: --output=output.json
-          workdir: controllers
-      -  id: gremlins_run
-         run: |
-          mkdir -p test/dir
-          
+          workdir: controllers 
       - name: Capture Gremlins output
         if: always()
         run: |
@@ -47,9 +42,4 @@ jobs:
         with:
           name: gremlins-summary
           path: test/dir/gremlins-summary.txt
-      - name: Upload Gremlins full output
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: gremlins-full-output
-          path: test/dir/gremlins-full-output.txt
+ 
