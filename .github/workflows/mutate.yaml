@@ -27,7 +27,7 @@ jobs:
         if: success()
         run: |
           # Extraindo os valores desejados do output do Gremlins
-          OUTPUT=$(cat test/dir/gremlins-output.log)
+          
           KILLED=$(echo "$OUTPUT" | grep "Killed" | awk '{print $2}')
           LIVED=$(echo "$OUTPUT" | grep "Lived" | awk '{print $2}')
           NOT_COVERED=$(echo "$OUTPUT" | grep "Not covered" | awk '{print $3}')
@@ -38,7 +38,7 @@ jobs:
           echo "Not covered: $NOT_COVERED" >> test/dir/gremlins-summary.txt
           echo "Test efficacy: $TEST_EFFICACY" >> test/dir/gremlins-summary.txt
           echo "Mutator coverage: $MUTATOR_COVERAGE" >> test/dir/gremlins-summary.txt
-          echo "$OUTPUT" > test/dir/gremlins-full-output.txt
+          
       - name: Upload Gremlins summary
         if: success()
         uses: actions/upload-artifact@v2
