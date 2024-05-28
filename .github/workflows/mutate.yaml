@@ -28,11 +28,11 @@ jobs:
         run: |
           # Extraindo os valores desejados do output do Gremlins
           
-          KILLED=$(echo "$OUTPUT" | grep "Killed" | sed -E 's/.*Killed:\s+([0-9]+).*/\1/')
-          LIVED=$(echo "$OUTPUT" | grep "Lived" | sed -E 's/.*Lived:\s+([0-9]+).*/\1/')
-          NOT_COVERED=$(echo "$OUTPUT" | grep "Not covered" | sed -E 's/.*Not covered:\s+([0-9]+).*/\1/')
-          TEST_EFFICACY=$(echo "$OUTPUT" | grep "Test efficacy" | sed -E 's/.*Test efficacy:\s+([0-9.]+%).*/\1/')
-          MUTATOR_COVERAGE=$(echo "$OUTPUT" | grep "Mutator coverage" | sed -E 's/.*Mutator coverage:\s+([0-9.]+%).*/\1/')
+          KILLED=$(echo "$OUTPUT" | grep "Killed" | cut -d ':' -f2 | tr -d ' ')
+          LIVED=$(echo "$OUTPUT" | grep "Lived" | cut -d ':' -f2 | tr -d ' ')
+          NOT_COVERED=$(echo "$OUTPUT" | grep "Not covered" | cut -d ':' -f2 | tr -d ' ')
+          TEST_EFFICACY=$(echo "$OUTPUT" | grep "Test efficacy" | cut -d ':' -f2 | tr -d ' ')
+          MUTATOR_COVERAGE=$(echo "$OUTPUT" | grep "Mutator coverage" | cut -d ':' -f2 | tr -d ' ')
           
           echo "Killed: $KILLED"
           echo "Lived: $LIVED"
