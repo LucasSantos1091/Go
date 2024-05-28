@@ -28,11 +28,11 @@ jobs:
         run: |
           # Extraindo os valores desejados do output do Gremlins
           
-          KILLED=$(echo "$OUTPUT" | grep "Killed" | awk '{print $2}')
-          LIVED=$(echo "$OUTPUT" | grep "Lived" | awk '{print $2}')
-          NOT_COVERED=$(echo "$OUTPUT" | grep "Not covered" | awk '{print $3}')
-          TEST_EFFICACY=$(echo "$OUTPUT" | grep "Test efficacy" | awk '{print $3}')
-          MUTATOR_COVERAGE=$(echo "$OUTPUT" | grep "Mutator coverage" | awk '{print $3}')
+          KILLED=$(echo "$OUTPUT" | grep "Killed" | sed -E 's/.*Killed: ([0-9]+).*/\1/')
+          LIVED=$(echo "$OUTPUT" | grep "Lived" | sed -E 's/.*Lived: ([0-9]+).*/\1/')
+          NOT_COVERED=$(echo "$OUTPUT" | grep "Not covered" | sed -E 's/.*Not covered: ([0-9]+).*/\1/')
+          TEST_EFFICACY=$(echo "$OUTPUT" | grep "Test efficacy" | sed -E 's/.*Test efficacy: ([0-9.]+%).*/\1/')
+          MUTATOR_COVERAGE=$(echo "$OUTPUT" | grep "Mutator coverage" | sed -E 's/.*Mutator coverage: ([0-9.]+%).*/\1/')
           echo "Killed: $KILLED" > test/dir/gremlins-summary.txt
           echo "Lived: $LIVED" >> test/dir/gremlins-summary.txt
           echo "Not covered: $NOT_COVERED" >> test/dir/gremlins-summary.txt
