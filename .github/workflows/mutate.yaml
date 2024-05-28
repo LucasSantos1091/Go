@@ -22,40 +22,31 @@ jobs:
       -  id: gremlins_run
          run: |
           mkdir -p test/dir
-          
-      - name: Capture Gremlins output
-        if: success()
+      - name: Extract Gremlins output with Python
         run: |
-          # Extraindo os valores desejados do output do Gremlins
-          
-          KILLED=$(echo "$OUTPUT" | grep "Killed" | cut -d ':' -f2 | tr -d ' ')
-          LIVED=$(echo "$OUTPUT" | grep "Lived" | cut -d ':' -f2 | tr -d ' ')
-          NOT_COVERED=$(echo "$OUTPUT" | grep "Not covered" | cut -d ':' -f2 | tr -d ' ')
-          TEST_EFFICACY=$(echo "$OUTPUT" | grep "Test efficacy" | cut -d ':' -f2 | tr -d ' ')
-          MUTATOR_COVERAGE=$(echo "$OUTPUT" | grep "Mutator coverage" | cut -d ':' -f2 | tr -d ' ')
-          
-          echo "Killed: $KILLED"
-          echo "Lived: $LIVED"
-          echo "Not covered: $NOT_COVERED"
-          echo "Test efficacy: $TEST_EFFICACY"
-          echo "Mutator coverage: $MUTATOR_COVERAGE"
-
-
-          echo "Killed: $KILLED" > test/dir/gremlins-summary.txt
-          echo "Lived: $LIVED" >> test/dir/gremlins-summary.txt
-          echo "Not covered: $NOT_COVERED" >> test/dir/gremlins-summary.txt
-          echo "Test efficacy: $TEST_EFFICACY" >> test/dir/gremlins-summary.txt
-          echo "Mutator coverage: $MUTATOR_COVERAGE" >> test/dir/gremlins-summary.txt
-          echo "$OUTPUT" > test/dir/gremlins-full-output.txt
-      - name: Upload Gremlins summary
-        if: success()
-        uses: actions/upload-artifact@v3
-        with:
-          name: gremlins-summary
-          path: test/dir/gremlins-summary.txt
-      - name: Upload Gremlins full output
-        if: success()
-        uses: actions/upload-artifact@v3
-        with:
-          name: gremlins-full-output
-          path: test/dir/gremlins-full-output.txt
+              python3 -c "
+              import re
+        with open('test/dir/gremlins-output.log', 'r') as file:
+            output = file.read()
+            killed = re.search(r'Killed:\s+(\d+)', output)
+            lived = re.search(r'Lived:\s+(\d+)', output)
+            not_covered = re.search(r'Not covered:\s+(\d+)', output)
+            test_efficacy = re.search(r'Test efficacy:\s+([\d\.]+%)', output)
+            mutator_coverage = re.search(r'Mutator coverage:\s+([\d\.]+%)', output)
+            killed_value = killed.group(1) if killed else 'N/A'
+            lived_value = lived.group(1) if lived else 'N/A'
+            not_covered_value = not_covered.group(1) if not_covered else 'N/A'
+            test_efficacy_value = test_efficacy.group(1) if test_efficacy else 'N/A'
+            mutator_coverage_value = mutator_coverage.group(1) if mutator_coverage else 'N/A'
+        with open('test/dir/gremlins-summary.txt', 'w') as summary_file:
+            summary_file.write(f'Killed: {killed_value}\n')
+            summary_file.write(f'Lived: {lived_value}\n')
+            summary_file.write(f'Not covered: {not_covered_value}\n')
+            summary_file.write(f'Test efficacy: {test_efficacy_value}\n')
+            summary_file.write(f'Mutator coverage: {mutator_coverage_value}\n')
+        
+        # Salva a saída completa do Gremlins
+        with open('test/dir/gremlins-full-output.txt', 'w') as full_output_file:
+            full_output_file.write(output)
+            "
+        
