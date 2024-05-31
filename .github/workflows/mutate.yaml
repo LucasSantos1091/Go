@@ -22,29 +22,11 @@ jobs:
          run: |
           mkdir -p test/dir
           
-      - name: Capture Gremlins output
-        if: always()
-        run: |
-          # Extraindo os valores desejados do output do Gremlins
-          
-          KILLED=$(echo "$OUTPUT" | grep "Killed" | sed -E 's/.*Killed:\s+([0-9]+).*/\1/')
-          LIVED=$(echo "$OUTPUT" | grep "Lived" | sed -E 's/.*Lived:\s+([0-9]+).*/\1/')
-          NOT_COVERED=$(echo "$OUTPUT" | grep "Not covered" | sed -E 's/.*Not covered:\s+([0-9]+).*/\1/')
-          TEST_EFFICACY=$(echo "$OUTPUT" | grep "Test efficacy" | sed -E 's/.*Test efficacy:\s+([0-9.]+%).*/\1/')
-          MUTATOR_COVERAGE=$(echo "$OUTPUT" | grep "Mutator coverage" | sed -E 's/.*Mutator coverage:\s+([0-9.]+%).*/\1/')
-
-          
-          echo "Killed: $KILLED" > test/dir/gremlins-summary.txt
-          echo "Lived: $LIVED" >> test/dir/gremlins-summary.txt
-          echo "Not covered: $NOT_COVERED" >> test/dir/gremlins-summary.txt
-          echo "Test efficacy: $TEST_EFFICACY" >> test/dir/gremlins-summary.txt
-          echo "Mutator coverage: $MUTATOR_COVERAGE" >> test/dir/gremlins-summary.txt
-          echo "$OUTPUT" > test/dir/gremlins-full-output.txt
       - name: Upload Gremlins summary
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: gremlins-summary
-          path: test/dir/gremlins-summary.txt
+          path: /output.json
       
        
